@@ -28,30 +28,30 @@ export default function BalanceSummary({
 
   return (
     <div className="space-y-6">
-      <Card>
+      <Card className="glass-card glass-card-hover border-white/10 hover:border-[#00E0FF]/50 transition-all duration-300">
         <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <DollarSign className="h-5 w-5" />
+          <CardTitle className="flex items-center space-x-2 text-white">
+            <DollarSign className="h-5 w-5 text-[#00E0FF]" />
             <span>Podsumowanie</span>
           </CardTitle>
-          <CardDescription>Całkowite wydatki w tej grupie</CardDescription>
+          <CardDescription className="text-gray-400">Całkowite wydatki w tej grupie</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="text-3xl font-bold">{totalExpenses.toFixed(2)} zł</div>
-          <p className="text-sm text-muted-foreground mt-2">
+          <div className="text-3xl font-bold bg-gradient-to-r from-[#6C63FF] to-[#00E0FF] bg-clip-text text-transparent">{totalExpenses.toFixed(2)} zł</div>
+          <p className="text-sm text-gray-400 mt-2">
             {balances.length} {balances.length === 1 ? 'członek' : balances.length < 5 ? 'członków' : 'członków'}
           </p>
         </CardContent>
       </Card>
 
       {simplifiedDebts.length > 0 ? (
-        <Card>
+        <Card className="glass-card glass-card-hover border-white/10 hover:border-[#00E0FF]/50 transition-all duration-300">
           <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <ArrowRight className="h-5 w-5" />
+            <CardTitle className="flex items-center space-x-2 text-white">
+              <ArrowRight className="h-5 w-5 text-[#00E0FF]" />
               <span>Kto Komu Jest Winien</span>
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-gray-400">
               Uproszczone rozliczenie długów
             </CardDescription>
           </CardHeader>
@@ -61,42 +61,42 @@ export default function BalanceSummary({
                 <div key={index}>
                   <div className="flex items-center justify-between py-2">
                     <div className="flex items-center space-x-2">
-                      <span className="font-medium">
+                      <span className="font-medium text-white">
                         {debt.fromName || debt.from}
                       </span>
-                      <ArrowRight className="h-4 w-4 text-muted-foreground" />
-                      <span className="font-medium">
+                      <ArrowRight className="h-4 w-4 text-gray-400" />
+                      <span className="font-medium text-white">
                         {debt.toName || debt.to}
                       </span>
                     </div>
-                    <Badge variant="destructive">
+                    <Badge variant="destructive" className="bg-red-500/20 text-red-400 border-red-500/30">
                       {debt.amount.toFixed(2)} zł
                     </Badge>
                   </div>
-                  {index < simplifiedDebts.length - 1 && <Separator />}
+                  {index < simplifiedDebts.length - 1 && <Separator className="bg-white/10" />}
                 </div>
               ))}
             </div>
           </CardContent>
         </Card>
       ) : (
-        <Card>
+        <Card className="glass-card glass-card-hover border-white/10 hover:border-[#00E0FF]/50 transition-all duration-300">
           <CardHeader>
-            <CardTitle>Wszystko Rozliczone</CardTitle>
-            <CardDescription>Brak zaległych długów</CardDescription>
+            <CardTitle className="text-white">Wszystko Rozliczone</CardTitle>
+            <CardDescription className="text-gray-400">Brak zaległych długów</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-gray-400">
               Wszystkie wydatki są zbilansowane. Nikt nikomu nie jest winien pieniędzy.
             </p>
           </CardContent>
         </Card>
       )}
 
-      <Card>
+      <Card className="glass-card glass-card-hover border-white/10 hover:border-[#00E0FF]/50 transition-all duration-300">
         <CardHeader>
-          <CardTitle>Indywidualne Salda</CardTitle>
-          <CardDescription>Bieżące saldo dla każdego członka</CardDescription>
+          <CardTitle className="text-white">Indywidualne Salda</CardTitle>
+          <CardDescription className="text-gray-400">Bieżące saldo dla każdego członka</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
@@ -105,13 +105,13 @@ export default function BalanceSummary({
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     {balance.netBalance > 0.01 ? (
-                      <TrendingUp className="h-4 w-4 text-destructive" />
+                      <TrendingUp className="h-4 w-4 text-red-400" />
                     ) : balance.netBalance < -0.01 ? (
-                      <TrendingDown className="h-4 w-4 text-green-600" />
+                      <TrendingDown className="h-4 w-4 text-green-400" />
                     ) : (
-                      <div className="h-4 w-4 rounded-full bg-green-500" />
+                      <div className="h-4 w-4 rounded-full bg-green-400" />
                     )}
-                    <span className="font-medium">
+                    <span className="font-medium text-white">
                       {balance.userName || balance.userId}
                     </span>
                   </div>
@@ -123,6 +123,13 @@ export default function BalanceSummary({
                         ? 'default'
                         : 'secondary'
                     }
+                    className={
+                      balance.netBalance > 0.01
+                        ? 'bg-red-500/20 text-red-400 border-red-500/30'
+                        : balance.netBalance < -0.01
+                        ? 'bg-green-500/20 text-green-400 border-green-500/30'
+                        : 'bg-gray-500/20 text-gray-400 border-gray-500/30'
+                    }
                   >
                     {balance.netBalance > 0.01
                       ? `Winien ${balance.netBalance.toFixed(2)} zł`
@@ -131,7 +138,7 @@ export default function BalanceSummary({
                       : 'Rozliczone'}
                   </Badge>
                 </div>
-                {index < balances.length - 1 && <Separator className="mt-3" />}
+                {index < balances.length - 1 && <Separator className="mt-3 bg-white/10" />}
               </div>
             ))}
           </div>

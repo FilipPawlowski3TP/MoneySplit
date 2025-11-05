@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import Link from 'next/link'
+import { motion } from 'framer-motion'
 
 export default function LoginForm() {
   const [email, setEmail] = useState('')
@@ -22,18 +23,14 @@ export default function LoginForm() {
     try {
       const supabase = createClient()
 
-      // Use client-side login - createBrowserClient handles cookies automatically
       const { data, error: loginError } = await supabase.auth.signInWithPassword({
         email,
         password,
       })
 
       if (loginError) {
-        // Handle specific error types
         if (loginError.message.includes('Email not confirmed')) {
-          setError(
-            'Sprawdź pocztę i kliknij link potwierdzający przed zalogowaniem.'
-          )
+          setError('Sprawdź pocztę i kliknij link potwierdzający przed zalogowaniem.')
         } else if (loginError.message.includes('Invalid login credentials')) {
           setError('Nieprawidłowy email lub hasło. Sprawdź swoje dane.')
         } else {
@@ -49,71 +46,82 @@ export default function LoginForm() {
         return
       }
 
-      console.log('Login successful, session:', data.session.user.email)
-
-      // Wait a bit for cookies to be set by createBrowserClient
       await new Promise(resolve => setTimeout(resolve, 500))
-
-      // Force a full page reload to ensure middleware sees cookies
       window.location.href = '/dashboard'
     } catch (error: any) {
       console.error('Login error:', error)
-      setError(error.message || 'An error occurred')
+      setError(error.message || 'Wystąpił błąd')
       setLoading(false)
     }
   }
 
   return (
-    <Card className="w-full max-w-md">
-      <CardHeader>
-        <CardTitle>Logowanie</CardTitle>
-        <CardDescription>Wprowadź swoje dane, aby uzyskać dostęp do konta</CardDescription>
-      </CardHeader>
-      <form onSubmit={handleSubmit}>
-        <CardContent className="space-y-4">
-          {error && (
-            <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-md">
-              {error}
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.2 }}
+    >
+      <Card className="glass-card border-white/20 hover:border-[#6C63FF]/50 transition-all duration-300">
+        <CardHeader>
+          <CardTitle className="text-2xl text-white">Zaloguj się</CardTitle>
+          <CardDescription className="text-gray-400">
+            Wprowadź swoje dane, aby uzyskać dostęp do konta
+          </CardDescription>
+        </CardHeader>
+        <form onSubmit={handleSubmit}>
+          <CardContent className="space-y-4">
+            {error && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="text-sm text-red-400 bg-red-500/10 border border-red-500/30 p-3 rounded-md"
+              >
+                {error}
+              </motion.div>
+            )}
+            <div className="space-y-2">
+              <Label htmlFor="email" className="text-gray-300">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="twoj@email.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                disabled={loading}
+                className="glass-card border-white/20 bg-white/5 text-white placeholder:text-gray-500 focus:border-[#6C63FF]/50"
+              />
             </div>
-          )}
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="twoj@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
+            <div className="space-y-2">
+              <Label htmlFor="password" className="text-gray-300">Hasło</Label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                disabled={loading}
+                className="glass-card border-white/20 bg-white/5 text-white placeholder:text-gray-500 focus:border-[#6C63FF]/50"
+              />
+            </div>
+          </CardContent>
+          <CardFooter className="flex flex-col space-y-4">
+            <Button
+              type="submit"
+              className="w-full bg-gradient-to-r from-[#6C63FF] to-[#00E0FF] hover:from-[#5A52FF] hover:to-[#00C0E0] text-white border-0 neon-glow"
               disabled={loading}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="password">Hasło</Label>
-            <Input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              disabled={loading}
-            />
-          </div>
-        </CardContent>
-        <CardFooter className="flex flex-col space-y-4">
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? 'Logowanie...' : 'Zaloguj'}
-          </Button>
-          <p className="text-sm text-muted-foreground text-center">
-            Nie masz konta?{' '}
-            <Link href="/signup" className="text-primary hover:underline">
-              Zarejestruj się
-            </Link>
-          </p>
-        </CardFooter>
-      </form>
-    </Card>
+            >
+              {loading ? 'Logowanie...' : 'Zaloguj się'}
+            </Button>
+            <p className="text-sm text-gray-400 text-center">
+              Nie masz konta?{' '}
+              <Link href="/signup" className="text-[#6C63FF] hover:text-[#00E0FF] hover:underline transition-colors">
+                Zarejestruj się
+              </Link>
+            </p>
+          </CardFooter>
+        </form>
+      </Card>
+    </motion.div>
   )
 }
-
-

@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { getUserGroups } from '@/lib/db/groups'
+import { getCurrentProfile } from '@/lib/db/profiles'
 import Navbar from '@/components/layout/navbar'
 import { cookies } from 'next/headers'
 import DashboardContent from '@/components/dashboard/dashboard-content'
@@ -38,11 +39,16 @@ export default async function DashboardPage() {
   }
 
   const groups = await getUserGroups()
+  const profile = await getCurrentProfile()
+
+  // Debug: Log profile data
+  console.log('[DashboardPage] Profile:', profile)
+  console.log('[DashboardPage] Profile name:', profile?.name)
 
   return (
     <>
-      <Navbar />
-      <DashboardContent groups={groups} currentUserId={user.id} />
+      <Navbar userProfile={profile} />
+      <DashboardContent groups={groups} currentUserId={user.id} userProfile={profile} />
     </>
   )
 }

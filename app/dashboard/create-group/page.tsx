@@ -3,6 +3,8 @@ import { redirect } from 'next/navigation'
 import CreateGroupForm from '@/components/groups/create-group-form'
 import Navbar from '@/components/layout/navbar'
 import { cookies } from 'next/headers'
+import { getCurrentProfile } from '@/lib/db/profiles'
+import CreateGroupHeader from '@/components/dashboard/create-group-header'
 
 export default async function CreateGroupPage() {
   // Get user from cookie as fallback (same as middleware)
@@ -36,19 +38,17 @@ export default async function CreateGroupPage() {
     redirect('/login')
   }
 
+  const profile = await getCurrentProfile()
+
   return (
     <>
-      <Navbar />
-      <div className="container mx-auto px-4 py-8 max-w-2xl">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold">Utwórz Nową Grupę</h1>
-          <p className="text-muted-foreground mt-2">
-            Utwórz grupę, aby zacząć dzielić wydatki z przyjaciółmi
-          </p>
+      <Navbar userProfile={profile} />
+      <div className="min-h-screen relative">
+        <div className="container mx-auto px-4 py-8 max-w-2xl relative z-10">
+          <CreateGroupHeader />
+          <CreateGroupForm />
         </div>
-        <CreateGroupForm />
       </div>
     </>
   )
 }
-

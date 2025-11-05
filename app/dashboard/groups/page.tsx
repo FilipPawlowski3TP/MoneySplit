@@ -1,18 +1,12 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import { getGroupById } from '@/lib/db/groups'
-import { getGroupExpenses } from '@/lib/db/expenses'
-import { calculateGroupBalancesWithCalculation } from '@/lib/db/expense-calculation'
-import Navbar from '@/components/layout/navbar'
-import GroupDetailsContent from '@/components/groups/group-details-content'
+import { getUserGroups } from '@/lib/db/groups'
 import { getCurrentProfile } from '@/lib/db/profiles'
+import Navbar from '@/components/layout/navbar'
+import GroupsContent from '@/components/groups/groups-content'
 import { cookies } from 'next/headers'
 
-export default async function GroupDetailsPage({
-  params,
-}: {
-  params: { id: string }
-}) {
+export default async function GroupsPage() {
   // Get user from cookie as fallback (same as middleware)
   const cookieStore = await cookies()
   const allCookies = cookieStore.getAll()
@@ -44,26 +38,13 @@ export default async function GroupDetailsPage({
     redirect('/login')
   }
 
-  const group = await getGroupById(params.id)
-
-  if (!group) {
-    redirect('/dashboard')
-  }
-
-  const expenses = await getGroupExpenses(params.id)
-  const calculationResult = await calculateGroupBalancesWithCalculation(params.id)
+  const groups = await getUserGroups()
   const profile = await getCurrentProfile()
 
   return (
     <>
       <Navbar userProfile={profile} />
-      <GroupDetailsContent
-        group={group}
-        expenses={expenses}
-        calculationResult={calculationResult}
-        currentUserId={user.id}
-        isCreator={user.id === group.created_by}
-      />
+      <GroupsContent groups={groups} currentUserId={user.id} />
     </>
   )
 }

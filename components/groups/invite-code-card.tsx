@@ -41,34 +41,34 @@ export default function InviteCodeCard({ inviteCode, groupId }: InviteCodeCardPr
   }
 
   return (
-    <Card>
+    <Card className="glass-card glass-card-hover border-white/10 hover:border-[#00E0FF]/50 transition-all duration-300">
       <CardHeader>
-        <CardTitle className="flex items-center space-x-2">
-          <Share2 className="h-5 w-5" />
+        <CardTitle className="flex items-center space-x-2 text-white">
+          <Share2 className="h-5 w-5 text-[#00E0FF]" />
           <span>Zaproś Przyjaciół</span>
         </CardTitle>
-        <CardDescription>
+        <CardDescription className="text-gray-400">
           Udostępnij ten kod lub link, aby zaprosić innych do dołączenia
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
-          <label className="text-sm font-medium">Kod Zaproszenia</label>
+          <label className="text-sm font-medium text-gray-300">Kod Zaproszenia</label>
           <div className="flex items-center space-x-2">
             <Input
               value={inviteCode}
               readOnly
-              className="font-mono text-lg tracking-wider text-center"
+              className="font-mono text-lg tracking-wider text-center bg-white/10 border-white/20 text-white"
             />
             <Button
               type="button"
               variant="outline"
               size="icon"
               onClick={copyCode}
-              className="shrink-0"
+              className="shrink-0 glass-card border-white/20 hover:bg-white/10 text-white"
             >
               {copied ? (
-                <Check className="h-4 w-4 text-green-600" />
+                <Check className="h-4 w-4 text-green-400" />
               ) : (
                 <Copy className="h-4 w-4" />
               )}
@@ -77,22 +77,22 @@ export default function InviteCodeCard({ inviteCode, groupId }: InviteCodeCardPr
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium">Link Zaproszenia</label>
+          <label className="text-sm font-medium text-gray-300">Link Zaproszenia</label>
           <div className="flex items-center space-x-2">
             <Input
               value={inviteLink}
               readOnly
-              className="text-sm"
+              className="text-sm bg-white/10 border-white/20 text-white"
             />
             <Button
               type="button"
               variant="outline"
               size="icon"
               onClick={copyLink}
-              className="shrink-0"
+              className="shrink-0 glass-card border-white/20 hover:bg-white/10 text-white"
             >
               {copiedLink ? (
-                <Check className="h-4 w-4 text-green-600" />
+                <Check className="h-4 w-4 text-green-400" />
               ) : (
                 <Copy className="h-4 w-4" />
               )}
@@ -101,7 +101,7 @@ export default function InviteCodeCard({ inviteCode, groupId }: InviteCodeCardPr
         </div>
 
         <div className="pt-2">
-          <Badge variant="secondary" className="w-full justify-center py-2">
+          <Badge variant="secondary" className="w-full justify-center py-2 bg-[#00E0FF]/20 text-[#00E0FF] border-[#00E0FF]/30">
             Udostępnij ten kod lub link znajomym, aby ich zaprosić
           </Badge>
         </div>

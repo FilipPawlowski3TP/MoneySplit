@@ -1,82 +1,92 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { Plus, Users } from 'lucide-react'
-import Link from 'next/link'
-import GroupSummaryCard from '@/components/dashboard/group-summary-card'
+import { useEffect, useState } from 'react'
+import FinancialSummary from '@/components/dashboard/financial-summary'
+import DynamicGreeting from '@/components/dashboard/dynamic-greeting'
+import TimeWidget from '@/components/dashboard/time-widget'
+import BottomNav from '@/components/layout/bottom-nav'
+import SpendingChart from '@/components/dashboard/spending-chart'
+import ActivityFeed from '@/components/dashboard/activity-feed'
 import { Group } from '@/lib/supabase/types'
+import { Profile } from '@/lib/supabase/types'
 
 interface DashboardContentProps {
   groups: Group[]
   currentUserId: string
+  userProfile?: Profile | null
 }
 
-export default function DashboardContent({ groups, currentUserId }: DashboardContentProps) {
-  return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-3xl font-bold">Twoje Grupy</h1>
-          <p className="text-muted-foreground mt-2">
-            Zarządzaj grupami wydatków
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <Link href="/dashboard/create-group">
-            <Button className="flex items-center space-x-2">
-              <Plus className="h-4 w-4" />
-              <span>Utwórz Grupę</span>
-            </Button>
-          </Link>
-          <Link href="/dashboard/join-group">
-            <Button variant="outline" className="flex items-center space-x-2">
-              <Users className="h-4 w-4" />
-              <span>Dołącz do Grupy</span>
-            </Button>
-          </Link>
-        </div>
-      </div>
+export default function DashboardContent({ groups, currentUserId, userProfile }: DashboardContentProps) {
+  const [isVisible, setIsVisible] = useState(false)
 
-      {groups.length === 0 ? (
+  // Debug: Log profile in client component
+  if (typeof window !== 'undefined') {
+    console.log('[DashboardContent] userProfile:', userProfile)
+    console.log('[DashboardContent] userProfile.name:', userProfile?.name)
+  }
+
+  useEffect(() => {
+    // Delay dashboard appearance until splash screen is done
+    const timer = setTimeout(() => {
+      setIsVisible(true)
+    }, 2500) // Wait for splash screen to complete
+
+    return () => clearTimeout(timer)
+  }, [])
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+      transition={{ 
+        duration: 0.8, 
+        ease: [0.4, 0, 0.2, 1],
+        delay: 0.2
+      }}
+      className="min-h-screen relative"
+    >
+      <div className="container mx-auto px-4 py-8 relative z-10">
+        {/* Welcome Header */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.5 }}
+          className="mb-6 md:mb-8"
         >
-          <Card className="max-w-md mx-auto">
-            <CardContent className="pt-6">
-              <div className="text-center py-8">
-                <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-lg font-semibold mb-2">Brak grup</h3>
-                <p className="text-muted-foreground mb-4">
-                  Utwórz pierwszą grupę, aby zacząć dzielić wydatki
-                </p>
-                <Link href="/dashboard/create-group">
-                  <Button>Utwórz Pierwszą Grupę</Button>
-                </Link>
-              </div>
-            </CardContent>
-          </Card>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
+            <div className="flex-1">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-2">
+                <DynamicGreeting userProfile={userProfile} />
+              </h1>
+              <p className="text-gray-400 text-sm sm:text-base md:text-lg">
+                Zarządzaj grupami wydatków i śledź swoje finanse
+              </p>
+            </div>
+            {/* Time Widget moved to header */}
+            <div className="hidden sm:block">
+              <TimeWidget />
+            </div>
+          </div>
         </motion.div>
-      ) : (
-        <motion.div
-          className="grid gap-4 md:grid-cols-2 lg:grid-cols-3"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.3 }}
-        >
-          {groups.map((group) => (
-            <GroupSummaryCard
-              key={group.id}
-              group={group}
-              currentUserId={currentUserId}
-            />
-          ))}
-        </motion.div>
-      )}
-    </div>
+
+        {/* Financial Summary */}
+        {groups.length > 0 && (
+          <FinancialSummary groups={groups} currentUserId={currentUserId} />
+        )}
+
+        {/* Spending Chart */}
+        {groups.length > 0 && (
+          <SpendingChart groups={groups} currentUserId={currentUserId} />
+        )}
+
+        {/* Activity Feed */}
+        {groups.length > 0 && (
+          <ActivityFeed groups={groups} />
+        )}
+      </div>
+      <BottomNav />
+      <div className="pb-24 md:pb-28" />
+    </motion.div>
   )
 }
-

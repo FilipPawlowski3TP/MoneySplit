@@ -25,6 +25,7 @@ import {
 } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
 import { Plus } from 'lucide-react'
+import { motion } from 'framer-motion'
 import { GroupMember } from '@/lib/supabase/types'
 
 interface AddExpenseDialogProps {
@@ -224,13 +225,17 @@ export default function AddExpenseDialog({
         <form onSubmit={handleSubmit}>
           <div className="space-y-4 py-4">
             {error && (
-              <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-md">
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-sm text-red-400 bg-red-900/20 p-3 rounded-md border border-red-700"
+              >
                 {error}
-              </div>
+              </motion.div>
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="description">Opis *</Label>
+              <Label htmlFor="description" className="text-gray-300">Opis *</Label>
               <Textarea
                 id="description"
                 placeholder="Kolacja w restauracji"
@@ -240,12 +245,13 @@ export default function AddExpenseDialog({
                 }
                 required
                 disabled={loading}
+                className="bg-white/10 border-white/20 text-white placeholder:text-gray-500 focus:ring-[#00E0FF] focus:border-[#00E0FF]"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="amount">Kwota *</Label>
+                <Label htmlFor="amount" className="text-gray-300">Kwota *</Label>
                 <Input
                   id="amount"
                   type="number"
@@ -257,11 +263,12 @@ export default function AddExpenseDialog({
                   }
                   required
                   disabled={loading}
+                  className="bg-white/10 border-white/20 text-white placeholder:text-gray-500 focus:ring-[#00E0FF] focus:border-[#00E0FF]"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="date">Data *</Label>
+                <Label htmlFor="date" className="text-gray-300">Data *</Label>
                 <Input
                   id="date"
                   type="date"
@@ -271,12 +278,13 @@ export default function AddExpenseDialog({
                   }
                   required
                   disabled={loading}
+                  className="bg-white/10 border-white/20 text-white placeholder:text-gray-500 focus:ring-[#00E0FF] focus:border-[#00E0FF]"
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="payer">Zapłacone Przez *</Label>
+              <Label htmlFor="payer" className="text-gray-300">Zapłacone Przez *</Label>
               <Select
                 value={formData.payerId}
                 onValueChange={(value) =>
@@ -284,22 +292,23 @@ export default function AddExpenseDialog({
                 }
                 disabled={loading}
               >
-                <SelectTrigger>
+                <SelectTrigger className="bg-white/10 border-white/20 text-white focus:ring-[#00E0FF] focus:border-[#00E0FF]">
                   <SelectValue placeholder="Wybierz kto zapłacił" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="glass-card border-white/10">
                   {members.length > 0 ? (
                     members.map((member) => (
                       <SelectItem 
                         key={member.user_id} 
                         value={member.user_id}
                         disabled={loading}
+                        className="text-white hover:bg-white/10"
                       >
                         {member.profile?.name || member.user_id || 'Nieznany'}
                       </SelectItem>
                     ))
                   ) : (
-                    <SelectItem value="no-members" disabled>
+                    <SelectItem value="no-members" disabled className="text-gray-400">
                       Brak dostępnych członków
                     </SelectItem>
                   )}
@@ -307,11 +316,11 @@ export default function AddExpenseDialog({
               </Select>
             </div>
 
-            <Separator />
+            <Separator className="bg-white/10" />
 
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <Label>Uczestnicy</Label>
+                <Label className="text-gray-300">Uczestnicy</Label>
                 <div className="flex gap-2">
                   {formData.payerId && (
                     <Button
@@ -320,7 +329,7 @@ export default function AddExpenseDialog({
                       size="sm"
                       onClick={handleAddMyself}
                       disabled={loading}
-                      className="text-xs"
+                      className="text-xs glass-card border-white/20 hover:bg-white/10 text-white"
                     >
                       Dodaj Siebie
                     </Button>
@@ -331,6 +340,7 @@ export default function AddExpenseDialog({
                     size="sm"
                     onClick={handleAddParticipant}
                     disabled={loading}
+                    className="glass-card border-white/20 hover:bg-white/10 text-white"
                   >
                     <Plus className="h-4 w-4 mr-2" />
                     Dodaj Uczestnika
@@ -339,15 +349,21 @@ export default function AddExpenseDialog({
               </div>
 
               {formData.participants.length === 0 ? (
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-gray-400">
                   Brak dodanych uczestników. Kliknij "Dodaj Uczestnika", aby dodać.
                 </p>
               ) : (
                 <div className="space-y-3">
                   {formData.participants.map((participant, index) => (
-                    <div key={index} className="flex gap-2 items-end">
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="flex gap-2 items-end glass-card p-4 rounded-lg border border-white/10"
+                    >
                       <div className="flex-1 space-y-2">
-                        <Label>Członek</Label>
+                        <Label className="text-gray-300">Członek</Label>
                         <Select
                           value={participant.userId}
                           onValueChange={(value) =>
@@ -355,22 +371,23 @@ export default function AddExpenseDialog({
                           }
                           disabled={loading}
                         >
-                          <SelectTrigger>
+                          <SelectTrigger className="bg-white/10 border-white/20 text-white focus:ring-[#00E0FF] focus:border-[#00E0FF]">
                             <SelectValue placeholder="Wybierz członka" />
                           </SelectTrigger>
-                          <SelectContent>
+                          <SelectContent className="glass-card border-white/10">
                             {members.length > 0 ? (
                               members.map((member) => (
                                 <SelectItem
                                   key={member.user_id}
                                   value={member.user_id}
                                   disabled={loading}
+                                  className="text-white hover:bg-white/10"
                                 >
                                   {member.profile?.name || member.user_id || 'Nieznany'}
                                 </SelectItem>
                               ))
                             ) : (
-                              <SelectItem value="no-members" disabled>
+                              <SelectItem value="no-members" disabled className="text-gray-400">
                                 Brak dostępnych członków
                               </SelectItem>
                             )}
@@ -378,7 +395,7 @@ export default function AddExpenseDialog({
                         </Select>
                       </div>
                       <div className="flex-1 space-y-2">
-                        <Label>Kwota Udziału</Label>
+                        <Label className="text-gray-300">Kwota Udziału</Label>
                         <Input
                           type="number"
                           step="0.01"
@@ -392,6 +409,7 @@ export default function AddExpenseDialog({
                             )
                           }
                           disabled={loading}
+                          className="bg-white/10 border-white/20 text-white placeholder:text-gray-500 focus:ring-[#00E0FF] focus:border-[#00E0FF]"
                         />
                       </div>
                       <Button
@@ -400,10 +418,11 @@ export default function AddExpenseDialog({
                         size="sm"
                         onClick={() => handleRemoveParticipant(index)}
                         disabled={loading}
+                        className="text-red-400 hover:text-red-300 hover:bg-red-900/20"
                       >
                         Usuń
                       </Button>
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
               )}
@@ -415,10 +434,15 @@ export default function AddExpenseDialog({
               variant="outline"
               onClick={() => setOpen(false)}
               disabled={loading}
+              className="glass-card border-white/20 hover:bg-white/10 text-white"
             >
               Anuluj
             </Button>
-            <Button type="submit" disabled={loading}>
+            <Button 
+              type="submit" 
+              disabled={loading}
+              className="premium-button"
+            >
               {loading ? 'Dodawanie...' : 'Dodaj Wydatek'}
             </Button>
           </DialogFooter>

@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import LoginForm from '@/components/auth/login-form'
-import { Users } from 'lucide-react'
+import LoginHeader from '@/components/auth/login-header'
 
 export default async function LoginPage() {
   const supabase = await createClient()
@@ -15,21 +15,11 @@ export default async function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-background to-muted">
-      <div className="w-full max-w-md space-y-8">
-        <div className="text-center">
-          <div className="flex items-center justify-center space-x-2 mb-4">
-            <Users className="h-8 w-8 text-primary" />
-            <h1 className="text-3xl font-bold">MoneySplit</h1>
-          </div>
-          <p className="text-muted-foreground">
-            Dziel wydatki i śledź, kto komu jest winien pieniądze
-          </p>
-        </div>
+    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+      <div className="w-full max-w-md space-y-8 relative z-10">
+        <LoginHeader />
         <LoginForm />
       </div>
     </div>
   )
 }
-
-
