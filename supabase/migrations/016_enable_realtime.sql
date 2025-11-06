@@ -9,3 +9,6 @@ ALTER PUBLICATION supabase_realtime ADD TABLE expense_splits;
 
 
 
+
+
+

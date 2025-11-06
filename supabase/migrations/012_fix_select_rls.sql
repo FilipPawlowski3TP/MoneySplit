@@ -92,3 +92,6 @@ GRANT EXECUTE ON FUNCTION get_group_by_id_safe(UUID, UUID) TO authenticated;
 
 
 
+
+
+

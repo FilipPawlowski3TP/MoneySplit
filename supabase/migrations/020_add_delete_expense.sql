@@ -45,3 +45,6 @@ GRANT EXECUTE ON FUNCTION delete_expense_safe(UUID, UUID) TO authenticated;
 
 
 
+
+
+
